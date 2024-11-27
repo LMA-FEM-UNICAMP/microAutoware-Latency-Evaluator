@@ -19,6 +19,9 @@ class LatencyEvaluator : public rclcpp::Node
     public:
         LatencyEvaluator() : Node("latency_evaluator"){
 
+            velocity_sub_period_flag = true;
+            steering_sub_period_flag = true;
+
             clock_sub_cb_group_ = this->create_callback_group(rclcpp::CallbackGroupType::MutuallyExclusive);
             velocity_sub_cb_group_ = this->create_callback_group(rclcpp::CallbackGroupType::MutuallyExclusive);
             steering_sub_cb_group_ = this->create_callback_group(rclcpp::CallbackGroupType::MutuallyExclusive);
@@ -48,12 +51,12 @@ class LatencyEvaluator : public rclcpp::Node
 
             std::string date_and_time_ = ss.str();
 
-            fout_.open(date_and_time_+"_latencies.csv", std::ios::out | std::ios::app);
+            fout_.open("./src/microAutoware-Latency-Evaluator/data/"+date_and_time_+"_latencies.csv", std::ios::out | std::ios::app);
 
-            fout_ << "#" << ", "
-                  << "Latency steering" << ", "
-                  << "Period steering" << ", "
-                  << "Latency velocity" << ", "
+            fout_ << "#" << ","
+                  << "Latency steering" << ","
+                  << "Period steering" << ","
+                  << "Latency velocity" << ","
                   << "Period velocity"
                   << "\n";  
         
@@ -74,10 +77,15 @@ class LatencyEvaluator : public rclcpp::Node
             double period = clock_.nanoseconds() - last_Velocity_msg_time_.nanoseconds();
             last_Velocity_msg_time_ = clock_;
 
-            fout_ << ++register_count_ << ", "
-                  << " " << ", " 
-                  << " " << ", "
-                  << duration << ", "
+            if(velocity_sub_period_flag){
+                period = -1;
+                velocity_sub_period_flag = false;
+            }
+
+            fout_ << ++register_count_ << ","
+                  << "-1" << "," 
+                  << "-1" << ","
+                  << duration << ","
                   << period
                   << "\n";  
         }
@@ -87,11 +95,16 @@ class LatencyEvaluator : public rclcpp::Node
             double period = clock_.nanoseconds() - last_Steering_msg_time_.nanoseconds();
             last_Steering_msg_time_ = clock_;
 
-            fout_ << ++register_count_ << ", "
-                  << duration << ", "
-                  << period << ", "
-                  << " " << ", " 
-                  << " "
+            if(steering_sub_period_flag){
+                period = -1;
+                steering_sub_period_flag = false;
+            }
+
+            fout_ << ++register_count_ << ","
+                  << duration << ","
+                  << period << ","
+                  << "-1" << "," 
+                  << "-1"
                   << "\n";  
         }
 
@@ -112,6 +125,9 @@ class LatencyEvaluator : public rclcpp::Node
         rclcpp::Time last_Velocity_msg_time_;
         std::string date_and_time_;
         u_int32_t register_count_;
+
+        bool velocity_sub_period_flag;
+        bool steering_sub_period_flag;
 
         std::fstream fout_;
 
