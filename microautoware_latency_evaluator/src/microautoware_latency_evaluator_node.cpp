@@ -51,11 +51,11 @@ class LatencyEvaluator : public rclcpp::Node
             fout_.open(date_and_time_+"_latencies.csv", std::ios::out | std::ios::app);
 
             fout_ << "#" << ", "
-                << "Latency steering" << ", "
-                << "Period steering" << ", "
-                << "Latency velocity" << ", "
-                << "Period velocity"
-                << "\n";  
+                  << "Latency steering" << ", "
+                  << "Period steering" << ", "
+                  << "Latency velocity" << ", "
+                  << "Period velocity"
+                  << "\n";  
         
         }
 
@@ -65,7 +65,7 @@ class LatencyEvaluator : public rclcpp::Node
 
     private:
 
-        void clock_sub_callback(const rosgraph_msgs::msg::Clock::SharedPtr msg){
+        void clock_sub_callback(const rosgraph_msgs::msg::Clock::SharedPtr msg) {
             clock_ = msg->clock;
         }
 
@@ -75,11 +75,11 @@ class LatencyEvaluator : public rclcpp::Node
             last_Velocity_msg_time_ = clock_;
 
             fout_ << ++register_count_ << ", "
-                << " " << ", " 
-                << " " << ", "
-                << duration << ", "
-                << period
-                << "\n";  
+                  << " " << ", " 
+                  << " " << ", "
+                  << duration << ", "
+                  << period
+                  << "\n";  
         }
 
         void steering_status_sub_callback(const autoware_auto_vehicle_msgs::msg::SteeringReport::SharedPtr msg) {
@@ -88,11 +88,11 @@ class LatencyEvaluator : public rclcpp::Node
             last_Steering_msg_time_ = clock_;
 
             fout_ << ++register_count_ << ", "
-                << duration << ", "
-                << period << ", "
-                << " " << ", " 
-                << " "
-                << "\n";  
+                  << duration << ", "
+                  << period << ", "
+                  << " " << ", " 
+                  << " "
+                  << "\n";  
         }
 
         rclcpp::CallbackGroup::SharedPtr clock_sub_cb_group_;
