@@ -29,11 +29,11 @@ class LatencyEvaluator : public rclcpp::Node
 
             clock_sub_ = this->create_subscription<rosgraph_msgs::msg::Clock>("/clock", 1, std::bind(&LatencyEvaluator::clock_sub_callback, this, _1), clock_sub_opt);
 
-            velocity_status_sub_ = this->create_subscription<autoware_auto_vehicle_msgs::msg::VelocityReport>("/microautoware/vehicle/status/velocity_status", 
+            velocity_status_sub_ = this->create_subscription<autoware_auto_vehicle_msgs::msg::VelocityReport>("/vehicle/status/velocity_status", 
                                                                                                     1, std::bind(&LatencyEvaluator::velocity_status_sub_callback, this, _1), 
                                                                                                     velocity_sub_opt);
 
-            steering_status_sub_ = this->create_subscription<autoware_auto_vehicle_msgs::msg::SteeringReport>("/microautoware/vehicle/status/steering_status", 
+            steering_status_sub_ = this->create_subscription<autoware_auto_vehicle_msgs::msg::SteeringReport>("/vehicle/status/steering_status", 
                                                                                                     1, std::bind(&LatencyEvaluator::steering_status_sub_callback, this, _1), 
                                                                                                     steering_sub_opt);
 
