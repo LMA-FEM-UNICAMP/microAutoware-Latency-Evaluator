@@ -14,6 +14,11 @@
 
 using std::placeholders::_1;
 
+struct clock_msg{
+    u_int32_t sec;
+    u_int32_t nanosec;
+};
+
 class LatencyEvaluator : public rclcpp::Node
 {
     public:
@@ -70,7 +75,8 @@ class LatencyEvaluator : public rclcpp::Node
     private:
 
         void clock_sub_callback(const rosgraph_msgs::msg::Clock::SharedPtr msg) {
-            clock_ = msg->clock;
+            clock_.sec = msg->clock.sec;
+            clock_.nanosec = msg->clock.nanosec;
             clock_sub_period_flag = true;
         }
 
@@ -78,8 +84,8 @@ class LatencyEvaluator : public rclcpp::Node
 
             if(clock_sub_period_flag){
 
-                uint64_t duration_velocity = clock_.seconds()*1e3 + clock_.nanoseconds()*1e-9 - msg->header.stamp.sec*1e3 - msg->header.stamp.nanosec*1e-9;
-                uint64_t period_velocity = clock_.seconds()*1e3 + clock_.nanoseconds()*1e-9 - last_Velocity_msg_time_.seconds()*1e3 - last_Velocity_msg_time_.nanoseconds()*1e-9;
+                double duration_velocity = clock_.sec + clock_.nanosec*1.0e-9 - msg->header.stamp.sec - msg->header.stamp.nanosec*1.0e-9;
+                double period_velocity = clock_.sec + clock_.nanosec*1.0e-9 - last_Velocity_msg_time_.sec - last_Velocity_msg_time_.nanosec*1.0e-9;
                 last_Velocity_msg_time_ = clock_;
 
                 if(!velocity_sub_period_flag){
@@ -96,11 +102,11 @@ class LatencyEvaluator : public rclcpp::Node
         }
 
         void steering_status_sub_callback(const autoware_auto_vehicle_msgs::msg::SteeringReport::SharedPtr msg) {
-            
+
             if(clock_sub_period_flag){
 
-                uint64_t duration_steer = clock_.seconds()*1e3 + clock_.nanoseconds()*1e-9 - msg->stamp.sec*1e3 - msg->stamp.nanosec*1e-9;
-                uint64_t period_steer = clock_.seconds()*1e3 + clock_.nanoseconds()*1e-9 - last_Steering_msg_time_.seconds()*1e3 - last_Steering_msg_time_.nanoseconds()*1e-9;
+                double duration_steer = clock_.sec + clock_.nanosec*1.0e-9 - msg->stamp.sec - msg->stamp.nanosec*1.0e-9;
+                double period_steer = clock_.sec + clock_.nanosec*1.0e-9 - last_Steering_msg_time_.sec - last_Steering_msg_time_.nanosec*1.0e-9;
                 last_Steering_msg_time_ = clock_;
 
                 if(!steering_sub_period_flag){
@@ -130,9 +136,9 @@ class LatencyEvaluator : public rclcpp::Node
         rclcpp::Subscription<autoware_auto_vehicle_msgs::msg::VelocityReport>::SharedPtr velocity_status_sub_;
         rclcpp::Subscription<autoware_auto_vehicle_msgs::msg::SteeringReport>::SharedPtr steering_status_sub_;
 
-        rclcpp::Time clock_;
-        rclcpp::Time last_Steering_msg_time_;
-        rclcpp::Time last_Velocity_msg_time_;
+        clock_msg clock_;
+        clock_msg last_Steering_msg_time_;
+        clock_msg last_Velocity_msg_time_;
         std::string date_and_time_;
         u_int32_t register_count_;
 
