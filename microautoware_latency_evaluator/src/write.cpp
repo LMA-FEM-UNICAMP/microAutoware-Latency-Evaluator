@@ -5,6 +5,10 @@
 #include <sstream>
 #include <string>
 
+struct clock_msg{
+    u_int32_t sec;
+    u_int32_t nanosec;
+};
 
 int main(){
 
@@ -20,32 +24,37 @@ int main(){
 
     std::string date_and_time_ = ss.str();
 
+    clock_msg clock_;
+    clock_msg last_Steering_msg_time_;
+    clock_msg last_Velocity_msg_time_;
+
+    clock_.nanosec = 217575766;
+    clock_.sec = 325;
+
+    last_Velocity_msg_time_.nanosec = 117575765;
+    last_Velocity_msg_time_.sec = 325;
+
+    last_Steering_msg_time_.nanosec = 17575764;
+    last_Steering_msg_time_.sec = 325;
+
     fout.open(date_and_time_+"_latencies.csv", std::ios::out | std::ios::app);
 
-    std::cout << "Enter the details of 5 students:"
-         << " roll name maths phy chem bio"
-         << std::endl;
+    fout << "#" << ","
+                    << "Latency steering" << ","
+                    << "Period steering" << ","
+                    << "Latency velocity" << ","
+                    << "Period velocity"
+                    << "\n";  
 
-    int i, roll, phy, chem, math, bio;
-    std::string name;
+    uint64_t duration_velocity = clock_.sec*1.0e9 + clock_.nanosec - last_Steering_msg_time_.sec*1.0e9 - last_Steering_msg_time_.nanosec;
+    long double period_velocity = clock_.sec + clock_.nanosec*1.0e-9 - last_Velocity_msg_time_.sec - last_Velocity_msg_time_.nanosec*1.0e-9;
+    last_Velocity_msg_time_ = clock_;
 
-    // Read the input
-    for (i = 0; i < 5; i++) {
+    fout << 1 << ","
+        << "-1" << "," 
+        << "-1" << ","
+        << duration_velocity << ","
+        << period_velocity
+        << "\n";               
 
-        std::cin >> roll
-            >> name
-            >> math
-            >> phy
-            >> chem
-            >> bio;
-
-        // Insert the data to file
-        fout << roll << ", "
-             << name << ", "
-             << math << ", "
-             << phy << ", "
-             << chem << ", "
-             << bio
-             << "\n";
-    }
 }

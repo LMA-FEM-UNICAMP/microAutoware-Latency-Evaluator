@@ -84,12 +84,12 @@ class LatencyEvaluator : public rclcpp::Node
 
             if(clock_sub_period_flag){
 
-                double duration_velocity = clock_.sec + clock_.nanosec*1.0e-9 - msg->header.stamp.sec - msg->header.stamp.nanosec*1.0e-9;
-                double period_velocity = clock_.sec + clock_.nanosec*1.0e-9 - last_Velocity_msg_time_.sec - last_Velocity_msg_time_.nanosec*1.0e-9;
+                u_int64_t duration_velocity = clock_.sec*1.0e9 + clock_.nanosec - msg->header.stamp.sec*1.0e9 - msg->header.stamp.nanosec;
+                u_int64_t period_velocity = clock_.sec*1.0e9 + clock_.nanosec - last_Velocity_msg_time_.sec*1.0e9 - last_Velocity_msg_time_.nanosec;
                 last_Velocity_msg_time_ = clock_;
 
                 if(!velocity_sub_period_flag){
-                    this->fout_ << ++register_count_ << ","
+                    this->fout_ << std::fixed << ++register_count_ << ","
                         << "-1" << "," 
                         << "-1" << ","
                         << duration_velocity << ","
@@ -105,12 +105,12 @@ class LatencyEvaluator : public rclcpp::Node
 
             if(clock_sub_period_flag){
 
-                double duration_steer = clock_.sec + clock_.nanosec*1.0e-9 - msg->stamp.sec - msg->stamp.nanosec*1.0e-9;
-                double period_steer = clock_.sec + clock_.nanosec*1.0e-9 - last_Steering_msg_time_.sec - last_Steering_msg_time_.nanosec*1.0e-9;
+                u_int64_t duration_steer = clock_.sec*1.0e9 + clock_.nanosec - msg->stamp.sec*1.0e9 - msg->stamp.nanosec;
+                u_int64_t period_steer = clock_.sec*1.0e9 + clock_.nanosec - last_Steering_msg_time_.sec*1.0e9 - last_Steering_msg_time_.nanosec;
                 last_Steering_msg_time_ = clock_;
 
                 if(!steering_sub_period_flag){
-                    this->fout_ << ++register_count_ << ","
+                    this->fout_ << std::fixed << ++register_count_ << ","
                         << duration_steer << ","
                         << period_steer << ","
                         << "-1" << "," 
