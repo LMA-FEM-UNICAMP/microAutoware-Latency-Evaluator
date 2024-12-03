@@ -1,0 +1,11 @@
+#ifndef MICROAUTOWARE_CONFIG_H_
+#define MICROAUTOWARE_CONFIG_H_
+
+  #define UART 1
+  #define UDP 2
+  #define USB 3
+  #define OTHER 0
+
+  #define USE_SIM_TIME 1
+
+#endif

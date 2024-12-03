@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Rename resource &apos;nucleo-H753ZI_microAutoware_Latency/Core/Inc/microAutoware_config&apos; to &apos;microAutoware_config.h&apos;" description="Rename resource &apos;microAutoware_config&apos;" flags="7" id="org.eclipse.ltk.core.refactoring.rename.resource" input="Core/Inc/microAutoware_config" name="microAutoware_config.h" stamp="1733232610787" updateReferences="true"/>
+</session>

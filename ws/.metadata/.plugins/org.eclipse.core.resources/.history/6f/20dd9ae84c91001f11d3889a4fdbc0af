@@ -1,0 +1,27 @@
+/**
+  ******************************************************************************
+  * @file    taskControle.h
+  * @brief   This file contains the declarations for the FreeRTOS task 
+  *          taskControle, which make a control of a autonomous vehicle by the
+  *          high level control action given by Autoware or manualy controled by
+  *          a physical joysitck.
+  ******************************************************************************
+  * @author  Gabriel Toffanetto França da Rocha 
+  *          Laboratory of Autonomous Vehicles (LMA) - FEM/Unicamp
+  * @date    Created:  October 21, 2024
+  *          Modified: 
+  ******************************************************************************
+  */
+#ifndef TASKCONTROLE_H_
+#define TASKCONTROLE_H_
+
+// ADC1 buffer for channels 2 and 6 [from main.h].
+extern unsigned int ucADC1Buffer[2];
+
+float fGetJoyPostition(uint16_t uiValue, uint16_t uiRef0, uint16_t uiRefMax, uint16_t uiRefMin)
+{
+	return (uiValue - uiRef0 > 0) ? (uiValue - uiRef0)/((float)(uiRefMax - uiRef0)) : (uiValue - uiRef0)/((float)(uiRef0 - uiRefMin));
+}
+
+
+#endif  /* TASKCONTROLE_H_ */

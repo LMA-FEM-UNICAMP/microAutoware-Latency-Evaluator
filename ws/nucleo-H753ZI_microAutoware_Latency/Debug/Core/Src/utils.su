@@ -1,0 +1,3 @@
+../Core/Src/utils.c:24:7:fGetJoyPostition	24	static
+../Core/Src/utils.c:44:6:vGetStringFromControlAction	8	static
+../Core/Src/utils.c:85:6:vDrivingModeLights	16	static

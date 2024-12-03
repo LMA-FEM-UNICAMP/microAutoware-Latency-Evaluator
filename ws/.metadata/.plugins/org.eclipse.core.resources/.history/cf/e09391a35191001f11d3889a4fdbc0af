@@ -1,0 +1,28 @@
+/**
+  ******************************************************************************
+  * @file    utils.c
+  * @brief   This file contains the headers of utilities functions used in the
+  *          project.
+  ******************************************************************************
+  * @author  Gabriel Toffanetto França da Rocha
+  *          Laboratory of Autonomous Vehicles (LMA) - FEM/Unicamp
+  * @date    Created:  October 23, 2024
+  *          Modified:
+  ******************************************************************************
+  */
+
+#ifndef UTILS_H_
+#define UTILS_H_
+
+/**
+  * @name   fGetJoyPostition
+  * @brief  Calculate the position of the joystick in [-1, 1] intervals.
+  * @param  uiValue:  Analog value for axis
+  *         uiRef0:   Analog zero value
+  *         uiRefMax: Analog value for axis maximum limit.
+  *         uiRefMin: Analog value for axis minimum limit.
+  * @retval Float value with joystick position between -1 and 1.
+  */
+float fGetJoyPostition(uint16_t uiValue, uint16_t uiRef0, uint16_t uiRefMax, uint16_t uiRefMin);
+
+#endif  /* UTILS_H_ */
