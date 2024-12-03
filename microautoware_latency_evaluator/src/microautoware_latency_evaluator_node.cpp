@@ -14,11 +14,17 @@
 
 using std::placeholders::_1;
 
+struct clock_msg{
+    u_int32_t sec;
+    u_int32_t nanosec;
+};
+
 class LatencyEvaluator : public rclcpp::Node
 {
     public:
         LatencyEvaluator() : Node("latency_evaluator"){
 
+            clock_sub_period_flag = false;
             velocity_sub_period_flag = true;
             steering_sub_period_flag = true;
 
@@ -69,43 +75,53 @@ class LatencyEvaluator : public rclcpp::Node
     private:
 
         void clock_sub_callback(const rosgraph_msgs::msg::Clock::SharedPtr msg) {
-            clock_ = msg->clock;
+            clock_.sec = msg->clock.sec;
+            clock_.nanosec = msg->clock.nanosec;
+            clock_sub_period_flag = true;
         }
 
         void velocity_status_sub_callback(const autoware_auto_vehicle_msgs::msg::VelocityReport::SharedPtr msg) {
-            double duration = clock_.nanoseconds()- msg->header.stamp.nanosec;
-            double period = clock_.nanoseconds() - last_Velocity_msg_time_.nanoseconds();
-            last_Velocity_msg_time_ = clock_;
 
-            if(velocity_sub_period_flag){
-                period = -1;
+            if(clock_sub_period_flag){
+
+                u_int64_t duration_velocity = clock_.sec*1.0e9 + clock_.nanosec - msg->header.stamp.sec*1.0e9 - msg->header.stamp.nanosec;
+                u_int64_t period_velocity = clock_.sec*1.0e9 + clock_.nanosec - last_Velocity_msg_time_.sec*1.0e9 - last_Velocity_msg_time_.nanosec;
+                last_Velocity_msg_time_ = clock_;
+
+                if(!velocity_sub_period_flag){
+                    this->fout_ << std::fixed << ++register_count_ << ","
+                        << "-1" << "," 
+                        << "-1" << ","
+                        << duration_velocity << ","
+                        << period_velocity
+                        << "\n";  
+                }
                 velocity_sub_period_flag = false;
-            }
 
-            fout_ << ++register_count_ << ","
-                  << "-1" << "," 
-                  << "-1" << ","
-                  << duration << ","
-                  << period
-                  << "\n";  
+            }
         }
 
         void steering_status_sub_callback(const autoware_auto_vehicle_msgs::msg::SteeringReport::SharedPtr msg) {
-            double duration = clock_.nanoseconds() - msg->stamp.nanosec;
-            double period = clock_.nanoseconds() - last_Steering_msg_time_.nanoseconds();
-            last_Steering_msg_time_ = clock_;
 
-            if(steering_sub_period_flag){
-                period = -1;
+            if(clock_sub_period_flag){
+
+                u_int64_t duration_steer = clock_.sec*1.0e9 + clock_.nanosec - msg->stamp.sec*1.0e9 - msg->stamp.nanosec;
+                u_int64_t period_steer = clock_.sec*1.0e9 + clock_.nanosec - last_Steering_msg_time_.sec*1.0e9 - last_Steering_msg_time_.nanosec;
+                last_Steering_msg_time_ = clock_;
+
+                if(!steering_sub_period_flag){
+                    this->fout_ << std::fixed << ++register_count_ << ","
+                        << duration_steer << ","
+                        << period_steer << ","
+                        << "-1" << "," 
+                        << "-1"
+                        << "\n";  
+                }
                 steering_sub_period_flag = false;
+
             }
 
-            fout_ << ++register_count_ << ","
-                  << duration << ","
-                  << period << ","
-                  << "-1" << "," 
-                  << "-1"
-                  << "\n";  
+                  
         }
 
         rclcpp::CallbackGroup::SharedPtr clock_sub_cb_group_;
@@ -120,14 +136,15 @@ class LatencyEvaluator : public rclcpp::Node
         rclcpp::Subscription<autoware_auto_vehicle_msgs::msg::VelocityReport>::SharedPtr velocity_status_sub_;
         rclcpp::Subscription<autoware_auto_vehicle_msgs::msg::SteeringReport>::SharedPtr steering_status_sub_;
 
-        rclcpp::Time clock_;
-        rclcpp::Time last_Steering_msg_time_;
-        rclcpp::Time last_Velocity_msg_time_;
+        clock_msg clock_;
+        clock_msg last_Steering_msg_time_;
+        clock_msg last_Velocity_msg_time_;
         std::string date_and_time_;
         u_int32_t register_count_;
 
         bool velocity_sub_period_flag;
         bool steering_sub_period_flag;
+        bool clock_sub_period_flag;
 
         std::fstream fout_;
 
