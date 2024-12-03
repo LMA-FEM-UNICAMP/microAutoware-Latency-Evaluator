@@ -7,4 +7,4 @@ org.eclipse.cdt.dsf.gdb.gdbRemotedescriptorType\:nucleo-H753ZI_TemplateAutoware_
 org.eclipse.cdt.dsf.gdb.gdbRemotedescriptorType\:nucleo-H753ZI_TemplateAutoware_Serial\ Debug/activeLaunchTarget=null\:---
 org.eclipse.cdt.dsf.gdb.gdbRemotedescriptorType\:nucleo-H753ZI_TemplateMicroROS_Serial\ Debug/activeLaunchMode=run
 org.eclipse.cdt.dsf.gdb.gdbRemotedescriptorType\:nucleo-H753ZI_TemplateMicroROS_Serial\ Debug/activeLaunchTarget=null\:---
-org.eclipse.cdt.dsf.gdb.gdbRemotedescriptorType\:nucleo-H753ZI_microAutoware_Latency\ Debug/activeLaunchMode=debug
+org.eclipse.cdt.dsf.gdb.gdbRemotedescriptorType\:nucleo-H753ZI_microAutoware_Latency\ Debug/activeLaunchMode=run

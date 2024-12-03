@@ -126,7 +126,7 @@ void MX_FREERTOS_Init(void) {
 
   /* Create the thread(s) */
   /* creation of TaskControle */
-  TaskControleHandle = osThreadNew(StartTaskControle, NULL, &TaskControle_attributes);
+//  TaskControleHandle = osThreadNew(StartTaskControle, NULL, &TaskControle_attributes);
 
   /* creation of TaskMicroAutowa */
   TaskMicroAutowaHandle = osThreadNew(StartMicroAutoware, NULL, &TaskMicroAutowa_attributes);

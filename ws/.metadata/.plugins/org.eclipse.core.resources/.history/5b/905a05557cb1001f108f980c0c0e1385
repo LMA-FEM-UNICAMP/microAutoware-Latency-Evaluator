@@ -317,6 +317,24 @@ void StartMicroAutoware(void * argument)
     timestamp.sec = rmw_uros_epoch_millis()/1e3;
     timestamp.nanosec = rmw_uros_epoch_nanos() - timestamp.sec*1e9;
 
+    rosidl_runtime_c__String xFrameId;
+    char cFrame[10] = "base_link";
+    xFrameId.data = cFrame;
+    xFrameId.size = 9;
+    xFrameId.capacity = 9;
+
+#ifdef SIMULATION_TIME
+    vehicle_twist_msg_.header.stamp = clock_msg_.clock;
+#else
+    vehicle_twist_msg_.header.stamp = timestamp;
+#endif
+    vehicle_twist_msg_.header.frame_id = xFrameId;
+    vehicle_twist_msg_.heading_rate = xControlSignal.fHeadingRate;
+    vehicle_twist_msg_.lateral_velocity = xControlSignal.fLatSpeed;
+    vehicle_twist_msg_.longitudinal_velocity = xControlSignal.fLongSpeed;
+    rcl_publish(&vehicle_twist_pub_, &vehicle_twist_msg_, NULL);
+  }
+
     // Run executor for EXECUTOR_SPIN_TIME ms
     rclc_executor_spin_some(&executor, EXECUTOR_SPIN_TIME * (1000 * 1000)); // Spinning executor for EXECUTOR_SPIN_PERIOD * (1000 * 1000) ns.
 
@@ -394,8 +412,11 @@ void StartMicroAutoware(void * argument)
       xFrameId.size = 9;
       xFrameId.capacity = 9;
 
+#ifdef SIMULATION_TIME
       vehicle_twist_msg_.header.stamp = clock_msg_.clock;
-
+#else
+      vehicle_twist_msg_.header.stamp = timestamp;
+#endif
       vehicle_twist_msg_.header.frame_id = xFrameId;
       vehicle_twist_msg_.heading_rate = xControlSignal.fHeadingRate;
       vehicle_twist_msg_.lateral_velocity = xControlSignal.fLatSpeed;
